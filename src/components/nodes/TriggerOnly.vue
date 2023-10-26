@@ -18,6 +18,7 @@
 </template>
 
 <script>
+
 export default {
     name: 'TriggerOnly',
     methods: {
@@ -31,6 +32,7 @@ export default {
       }  
     },
     mounted() {
+      // for init, called once, to capture on mount
       this.$nextTick(() => {
         const id = this.$el.parentElement.parentElement.id;
         const data = this.$df.getNodeFromId(id.slice(5));
@@ -41,22 +43,15 @@ export default {
 }
 </script>
 
-<style>
+<style > 
+/*
+    IMPORTANT
+        you cannot do scoped styles, as the .drawflow-node is shared across the entire canvas;
+        some node-specific style override here, make sure to put a specific class name (component name or css-class)
+        if these are repeated, these may be refactored into their own scss
+*/
 
-/* some node-specific style override here ... */
-
-
-.drawflow .drawflow-node {
-    background: #ebf1f2;
-    padding: 0;
-    width: auto;
-	padding-bottom: 1rem;
-}
-.drawflow .drawflow-node.selected {
-    background: #ebcece;
-}
-
-.drawflow .drawflow-node.selected .node-trigger-only h1 {
+.drawflow .drawflow-node.selected .node-trigger-only h1 {  /* uses css-class */
     background: #fcebf8;
 }
 
@@ -77,16 +72,6 @@ export default {
         padding: 15px;
     }
 
-}
-
-.drawflow .drawflow-node .input, 
-.drawflow .drawflow-node .output {
-    /* e.g. instead, we want this bigger and rounded */
-    width: 25px;
-    height: 25px;
-    border-radius: 20%;
-    border-width: 4px;
-    border-color: #777;
 }
 
 

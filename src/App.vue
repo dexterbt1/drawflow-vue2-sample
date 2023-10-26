@@ -3,9 +3,7 @@
 	  <nav class="top-toolbar">
 		<select v-model="selectedNodeType">
             <option value="">-- select --</option>
-            <option value="trigger">Trigger</option>
-            <option value="pipe">Pipe</option>
-            <option value="output">Output</option>
+			<option v-for="nsmv in NodesSelectionMap" v-bind:value="nsmv.selfKey">{{ nsmv.displayName }}</option>
 		</select>
 		<button @click="addNodeX">Add Node</button>
 		<div style="float: right">
@@ -47,7 +45,7 @@
 
 <script>
 
-  // FIXME: note this is a monolith example - refactor and design this in their proper classes, components, etc 
+  // FIXME: quite a monolith example - might need refactor and design this in their proper classes, components, etc 
 
 
   /*eslint-disable */
@@ -55,14 +53,15 @@
   import Vue from 'vue'
 
   import Drawflow from 'drawflow'
-  import styleDrawflow from 'drawflow/dist/drawflow.min.css'
 
   import TriggerOnly from './components/nodes/TriggerOnly.vue'
-  import HelloWorld from './components/HelloWorld.vue'
-  import HelloWorld2 from './components/HelloWorld2.vue'
+  import PipeOne from './components/nodes/PipeOne.vue'
+  import SinkTwoInp from './components/nodes/SinkTwoInp.vue'
 
   const NODES_SELECTION_MAP = {
-  	'trigger': { 
+	'trigger': { 
+		selfKey: 'trigger',   // reverse lookup
+		displayName: 'Trigger',
 		nodeType: 'TriggerOnly', 
 		nodeModule: TriggerOnly, 
 		defaultProps: { 
@@ -73,28 +72,48 @@
 			moreOptComplex: { foo: ['bar', 1234] },
 		},
 	},
+	'pipe-one': {
+		selfKey: 'pipe-one',   // reverse lookup
+		displayName: 'Pipe One',
+		nodeType: 'PipeOne', 
+		nodeModule: PipeOne, 
+		defaultProps: { 
+		}, 
+		defaultOptions: {
+		},
+	},
+	'sink-two': {
+		selfKey: 'sink-two',   // reverse lookup
+		displayName: 'Sink Two',
+		nodeType: 'SinkTwoInp', 
+		nodeModule: SinkTwoInp,
+		defaultProps: { 
+		}, 
+		defaultOptions: {
+		},
+	},
   };
-  
-  
+
   export default {
 
 	name: 'App',
 
 	components: { 
 	  //TriggerOnly,
-	  //HelloWorld,
-	  //HelloWorld2
+	  // ... ??
 	},
 
 	data() {
 	  return {
-	    greeting: 'hello world',
+		NodesSelectionMap: NODES_SELECTION_MAP,  // needed to render the dropdown
 		exportValue: null,
 		selectedNodeType: '',
+	    sampleGreeting: 'hello world',
 	  };
 	},
 
 	mounted() {
+
 	  // init
 	  const id = document.getElementById("drawflow");
 	  Vue.prototype.$df = new Drawflow(id, Vue, this);
@@ -112,13 +131,11 @@
 		this.$df.registerNode(nconf.nodeType, nconf.nodeModule, props, opts);
 		console.log('ok df.registeredNode() ...', nconf.nodeType, nconf.nodeModule, props, opts);
 	  });
-	  this.$df.registerNode('HelloWorld', HelloWorld, {select_type: "2"}, {});
-	  this.$df.registerNode('HelloWorld2', HelloWorld2,{}, {});
-
+	  
 	  // required start
 	  this.$df.start();
 
-	  // initial configuration of nodes ... do it here
+	  // initial configuration of nodes ... do it here ... import etc..
 	  //this.$df.addNode('HelloWorld', 0, 1, 150, 100, 'HelloWorld', {select_type: "1"}, 'HelloWorld', 'vue');
 	},
 
@@ -138,19 +155,13 @@
 		if (ntypek.length <= 0) { return; }
 		if (!(ntypek in NODES_SELECTION_MAP)) { return; }
 		const nconf = NODES_SELECTION_MAP[ntypek];
-		//console.log('selectedNodeType to add:', ntypek, nconf);
+		console.log('selectedNodeType to add:', ntypek, nconf);
 		this.$df.addNode(
 			nconf.nodeType,
 			nconf.nodeModule.methods.INPUTS_COUNT(), 
 			nconf.nodeModule.methods.OUTPUTS_COUNT(), 
 			100, 100, nconf.nodeType, {}, nconf.nodeType, 'vue');
 	  },
-	  addnodedf() {
-		this.$df.addNode('HelloWorld', 0, 1, 150, 300, 'HelloWorld', {select_type: "1"}, 'HelloWorld', 'vue');
-	  },
-	  addnodedf2() {
-		this.$df.addNode('HelloWorld2', 1, 1, 150, 300, 'HelloWorld2', {select_type: "2"}, 'HelloWorld2', 'vue');
-	  }
   
 	}
   

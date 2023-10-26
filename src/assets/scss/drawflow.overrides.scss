@@ -1,0 +1,26 @@
+/* override the drawflow styles here */
+
+.drawflow .drawflow-node {
+    background: #ebf1f2;
+    padding: 0;
+    width: auto;
+	padding-bottom: 1rem;
+}
+.drawflow .drawflow-node.selected {
+    background: #ebcece;
+}
+
+.drawflow .drawflow-node .input, 
+.drawflow .drawflow-node .output {
+    /* e.g. instead, we want this bigger and rounded */
+    width: 25px;
+    height: 25px;
+    border-radius: 20%;
+    border-width: 4px;
+    border-color: #777;
+}
+
+.drawflow .drawflow-node .input {
+    background: #fff;
+    left: -36px;
+}

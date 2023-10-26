@@ -86,17 +86,3 @@ svg {
 	}
 }
 
-
-/* FIXME: some hard overrides, you might be better off overriding node-specific css or drawflow's css and rebuilding */
-
-.drawflow .drawflow-node.selected {
-	/*
-	background: #ebcece !important;
-	*/
-}
-.drawflow .drawflow-node {
-	/*
-	width: auto !important;
-	padding-bottom: 2rem !important;
-	*/
-}
