@@ -6,9 +6,12 @@ quick starter boilerplate for Drawflow and vue2
 
 ### Usage
 
-  nvm use v16  # for nvm users
-  npm install
-  npm run dev
+    nvm use v16  # for nvm users
+    npm install
+    npm run dev
+
+    # open browser at http://localhost:8080/
+
 
 ### Thanks to:
 - [jerosoler/Drawflow](https://jerosoler.github.io/Drawflow/)
