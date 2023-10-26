@@ -7,14 +7,25 @@
 		</select>
 		<button @click="addNodeX">Add Node</button>
 		<button @click="exportDF">Export</button>
+		<button @click="toggleAside">
+			Debug Selected 
+			<span v-if="asideEnabled">ON</span>
+			<span v-if="!asideEnabled">OFF</span>
+		</button>
 		<div style="float: right">
 			<button @click="clearDF">Clear All</button>
 		</div>
 	  </nav>
-	  <div id="drawflow"></div>
+	  <div id="drawflow" v-bind:class="{ asidevisible: (asideEnabled && (asideSelectedPart != null)) }"></div>
 
-	  <!-- FIXME: not componetized yet -->
-	  <dialog id="exportDialog">
+	  <!-- FIXME: componetize this -->
+	  <aside id="builder-aside" v-if="asideEnabled && (asideSelectedPart != null)">
+		<div class="debug-text">{{ asideSelectedPart[1] }}</div>
+	  </aside>
+
+
+	  <!-- FIXME: componetize this -->
+	  <dialog id="export-dialog">
 		<div class="xp-wrap">
 	      <div class="buttons-bar">
 			<button class="close" autofocus @click="exportDialog.close()">Close</button>
@@ -22,7 +33,6 @@
 		  <textarea>{{ exportValue }}</textarea>
 		</div>
 	  </dialog>
-
 
 	</div>
 </template>
@@ -56,7 +66,7 @@
 	overflow: clip;
   }
 
-  #exportDialog {
+  #export-dialog {
     position: absolute;
     width: 50vw;
     height: 70vh;
@@ -66,25 +76,46 @@
 	box-shadow: 5px 5px 30px #8885;
   }
 
-  #exportDialog::backdrop {
+  #export-dialog::backdrop {
 	backdrop-filter: blur(2px);
   }
 
-  #exportDialog .xp-wrap {
+  #export-dialog .xp-wrap {
 	position: relative;
 	height: 100%;
   }
-  #exportDialog .xp-wrap .buttons-bar {
+  #export-dialog .xp-wrap .buttons-bar {
 	position: absolute;
 	top: 0;
 	right: 0;
   }
 	
-  #exportDialog .xp-wrap textarea {
+  #export-dialog .xp-wrap textarea {
 	height: calc(100% - 80px);
 	width: 100%;
 	margin-top: 40px;
-	font-family: "Courier New", monospace;
+	font-family:'Courier New', Courier, monospace;
+  }
+
+  #builder-aside {
+	position: absolute;
+	top: 66px;
+	right: 40px;
+	border: 1px solid #aaa;
+	border-radius: 4px;
+	width: 300px;
+	height: calc(100vh - 90px - 1px);
+	height: calc(100dvh - 90px - 1px);
+	background: #fff;
+
+	.debug-text {
+		padding: 15px;
+		font-family:'Courier New', Courier, monospace;
+	}
+  }
+
+  #drawflow.asidevisible {
+	width: calc(100% - 80px - 2px - 300px - 15px);  /* see above #drawflow */
   }
 
 </style>
@@ -157,6 +188,8 @@
 		exportDialogShown: false,
 		exportDialog: null,
 		selectedNodeType: '',
+		asideEnabled: false,
+		asideSelectedPart: null,
 	  };
 	},
 
@@ -192,7 +225,24 @@
 		  dfel.style['background-image'] = 'radial-gradient(circle, #aaa3 1px, #eee0 1px)';
 		}
 		//console.log('zoom', zoomLevel, bgcss, dfel.style['background-size']);
-	  })
+	  });
+
+	  // aside handler
+	  this.$df.on('nodeSelected', (id) => { 
+		const n = this.$df.getNodeFromId(id);
+		console.log('nodeSelected', id, n);
+		this.asideSelectedPart = ['node', n];
+	  });
+	  this.$df.on('nodeUnselected', (id) => { 
+		this.asideSelectedPart = null;
+	  });
+	  this.$df.on('connectionSelected', (c) => { 
+		console.log('connectionSelected', c);
+		this.asideSelectedPart = ['connector', c];
+	  });
+	  this.$df.on('connectionUnselected', (id) => { 
+		this.asideSelectedPart = null;
+	  });
 	  
 	  // required start
 	  this.$df.start();
@@ -203,7 +253,8 @@
 
 
       // init dialog	
-	  const xpdia = document.querySelector('#exportDialog');
+	  const xpdia = document.getElementById('export-dialog');
+	  console.log('xpdia', xpdia);
 	  this.exportDialog = xpdia;
 
 	},
@@ -216,12 +267,14 @@
 		console.log('export JSON', this.exportValue);
 
 		this.exportDialog.showModal();
-
-		//this.exportDialogShown = true;	
 	  },
 
 	  clearDF() {
 		this.$df.clear();
+	  },
+
+	  toggleAside() {
+		this.asideEnabled = !this.asideEnabled;
 	  },
 
 	  addNodeX() {
