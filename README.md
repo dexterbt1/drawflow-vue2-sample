@@ -4,6 +4,12 @@ quick starter boilerplate for Drawflow and vue2
 
 ![Screenshot](https://github.com/dexterbt1/drawflow-vue2-sample/raw/master/ss.tmp.png)
 
+### Usage
+
+  nvm use v16  # for nvm users
+  npm install
+  npm run dev
+
 ### Thanks to:
 - [jerosoler/Drawflow](https://jerosoler.github.io/Drawflow/)
 - [efiand/vue2-boilerplate](https://github.com/efiand/vue2-boilerplate)

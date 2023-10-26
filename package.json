@@ -7,7 +7,6 @@
 		"dev": "webpack-dev-server --mode development --open",
 		"lint": "eslint *.js src/**/*.{js,vue} && stylelint src/**/*.{css,vue}"
 	},
-	"pre-commit": "lint",
 	"devDependencies": {
 		"@babel/eslint-parser": "7.22.15",
 		"@babel/preset-env": "7.22.20",
