@@ -18,11 +18,15 @@ export default {
     data() {
       return {
         // no data, purely sample
+
+        // NOTE: findings, current Drawflow implem .data uses snake_case naming convention when exporting/importing ...
+        //       avoid other cases (camelCase, ALL_CAPs, WeiRD_CApping, etc)
       }  
     },
     mounted() {
       this.$nextTick(() => {
         // for init, called once, to capture on mount
+        // use this to initialize especially during import()
       });
     },
 }

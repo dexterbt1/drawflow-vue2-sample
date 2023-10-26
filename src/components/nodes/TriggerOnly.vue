@@ -2,7 +2,7 @@
     <div class="node-trigger-only">
         <h1>Trigger</h1>
         <section class="form">
-            <select df-triggerType v-model="triggerType">
+            <select df-trigger_type v-model="trigger_type">
                 <option value="">-- select --</option>
                 <option value="1">on message</option>
                 <option value="2">on mention</option>
@@ -10,8 +10,8 @@
             </select>
         </section>
         <section class="info-block">
-            <span v-if="triggerType > 0">
-                {{ triggerType }}
+            <span v-if="trigger_type > 0">
+                {{ trigger_type }}
             </span>
         </section>
     </div>
@@ -28,16 +28,19 @@ export default {
     },
     data() {
       return {
-        triggerType: "",
+        // NOTE: findings, current Drawflow implem .data uses snake_case naming convention when exporting/importing ...
+        //       avoid other cases (camelCase, ALL_CAPs, WeiRD_CApping, etc)
+        trigger_type: "",
       }  
     },
     mounted() {
       // for init, called once, to capture on mount
+      // use this to initialize especially during import()
       this.$nextTick(() => {
         const id = this.$el.parentElement.parentElement.id;
-        const data = this.$df.getNodeFromId(id.slice(5));
-        this.triggerType = data.data.triggerType;
-        console.log('TriggerOnly node-id=', id, 'data=', data, this.triggerType);
+        const d = this.$df.getNodeFromId(id.slice(5));
+        this.trigger_type = d.data.trigger_type;
+        console.log('TriggerOnly node-id=', id, 'data=', d.data, this.trigger_type);
       });
     },
 }
