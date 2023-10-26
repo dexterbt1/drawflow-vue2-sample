@@ -12,7 +12,7 @@
 
 .drawflow .drawflow-node .input, 
 .drawflow .drawflow-node .output {
-    /* e.g. instead, we want this bigger and rounded */
+    /* e.g. instead, we want this bigger and rounded square */
     width: 25px;
     height: 25px;
     border-radius: 20%;
@@ -22,5 +22,8 @@
 
 .drawflow .drawflow-node .input {
     background: #fff;
-    left: -36px;
+    left: -30px;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
 }

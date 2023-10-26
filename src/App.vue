@@ -8,10 +8,17 @@
 		<button @click="addNodeX">Add Node</button>
 		<div style="float: right">
 			<button @click="exportDF">Export</button>
-			<button @click="importDF">Import</button>
 		</div>
 	  </nav>
 	  <div id="drawflow"></div>
+
+	  <!-- FIXME: not componetized yet -->
+	  <dialog id="exportDialog" v-bind:open="exportDialogShown">
+		<div class="xp-wrap">
+		  <button class="close" autofocus @click="exportDialogShown=false">Close</button>
+		  <textarea>{{ exportValue }}</textarea>
+		</div>
+	  </dialog>
 	</div>
 </template>
 
@@ -40,6 +47,34 @@
 	border: 1px solid #bbb;
 	border-radius: 5px;
   }
+
+  #exportDialog {
+    position: absolute;
+    width: 50vw;
+    height: 70vh;
+    top: calc(50% - 35vh);
+	border: 1px solid #888;
+	border-radius: 5px;
+	background-color: #fafafa;
+	box-shadow: 5px 5px 30px #8885;
+  }
+  #exportDialog .xp-wrap {
+	position: relative;
+	height: 100%;
+  }
+  #exportDialog .xp-wrap button.close {
+	position: absolute;
+	top: 0;
+	right: 0;
+  }
+	
+  #exportDialog .xp-wrap textarea {
+	height: calc(100% - 80px);
+	width: 100%;
+	margin-top: 40px;
+	font-family: "Courier New", monospace;
+  }
+
 </style>
   
 
@@ -107,6 +142,7 @@
 	  return {
 		NodesSelectionMap: NODES_SELECTION_MAP,  // needed to render the dropdown
 		exportValue: null,
+		exportDialogShown: false,
 		selectedNodeType: '',
 	    sampleGreeting: 'hello world',
 	  };
@@ -136,18 +172,19 @@
 	  this.$df.start();
 
 	  // initial configuration of nodes ... do it here ... import etc..
-	  //this.$df.addNode('HelloWorld', 0, 1, 150, 100, 'HelloWorld', {select_type: "1"}, 'HelloWorld', 'vue');
+
+	  const demoDF = {"drawflow":{"Home":{"data":{"1":{"id":1,"name":"TriggerOnly","data":{"triggertype":"2"},"class":"TriggerOnly","html":"TriggerOnly","typenode":"vue","inputs":{},"outputs":{"output_1":{"connections":[{"node":"3","output":"input_1"}]}},"pos_x":50,"pos_y":150},"2":{"id":2,"name":"SinkTwoInp","data":{},"class":"SinkTwoInp","html":"SinkTwoInp","typenode":"vue","inputs":{"input_1":{"connections":[{"node":"3","input":"output_1"}]},"input_2":{"connections":[]}},"outputs":{},"pos_x":823,"pos_y":239},"3":{"id":3,"name":"PipeOne","data":{},"class":"PipeOne","html":"PipeOne","typenode":"vue","inputs":{"input_1":{"connections":[{"node":"1","input":"output_1"}]}},"outputs":{"output_1":{"connections":[{"node":"2","output":"input_1"}]}},"pos_x":473,"pos_y":402}}}}};
+	  this.$df.import(demoDF);
 	},
 
 	methods: {
 
 	  exportDF() {
-		this.exportValue = this.$df.export();
-		console.log(this.exportValue);
-	  },
+		let xv = this.$df.export();
+		this.exportValue = JSON.stringify(xv);
+		console.log('export JSON', this.exportValue);
 
-	  importDF() {
-		this.$df.import(this.exportValue);
+		this.exportDialogShown = true;	
 	  },
 
 	  addNodeX() {
