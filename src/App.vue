@@ -6,8 +6,9 @@
 			<option v-for="nsmv in NodesSelectionMap" v-bind:value="nsmv.selfKey">{{ nsmv.displayName }}</option>
 		</select>
 		<button @click="addNodeX">Add Node</button>
+		<button @click="exportDF">Export</button>
 		<div style="float: right">
-			<button @click="exportDF">Export</button>
+			<button @click="clearDF">Clear</button>
 		</div>
 	  </nav>
 	  <div id="drawflow"></div>
@@ -185,6 +186,10 @@
 		console.log('export JSON', this.exportValue);
 
 		this.exportDialogShown = true;	
+	  },
+
+	  clearDF() {
+		this.$df.clear();
 	  },
 
 	  addNodeX() {
