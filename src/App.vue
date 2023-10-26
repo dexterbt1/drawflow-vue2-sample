@@ -47,6 +47,8 @@
 	margin: 15px 40px 0;
 	border: 1px solid #bbb;
 	border-radius: 5px;
+	background-size: 40px 40px;
+    background-image: radial-gradient(circle, #aaa8 1px, #eee0 1px);
   }
 
   #exportDialog {
@@ -168,6 +170,20 @@
 		this.$df.registerNode(nconf.nodeType, nconf.nodeModule, props, opts);
 		console.log('ok df.registeredNode() ...', nconf.nodeType, nconf.nodeModule, props, opts);
 	  });
+
+	  this.$df.on('zoom', (zoomLevel) => {
+		// translate background grid also ... note above 40px grid size
+		let GRID = 40;
+		const dfel = document.querySelector('#drawflow');
+		let g = (40 * zoomLevel).toFixed('2');
+		const bgcss = String(g) + 'px ' + String(g) + 'px';
+		dfel.style['background-size'] = bgcss;
+		dfel.style['background-image'] = 'radial-gradient(circle, #aaa8 1px, #eee0 1px)';
+		if (zoomLevel <= 0.5) {
+		  dfel.style['background-image'] = 'radial-gradient(circle, #aaa3 1px, #eee0 1px)';
+		}
+		//console.log('zoom', zoomLevel, bgcss, dfel.style['background-size']);
+	  })
 	  
 	  // required start
 	  this.$df.start();

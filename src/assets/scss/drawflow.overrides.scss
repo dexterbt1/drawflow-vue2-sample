@@ -1,10 +1,13 @@
 /* override the drawflow styles here */
 
+.drawflow {
+}
+
 .drawflow .drawflow-node {
-    background: #ebf1f2;
     padding: 0;
     width: auto;
 	padding-bottom: 1rem;
+    background: #ebf1f2;
 }
 .drawflow .drawflow-node.selected {
     background: #ebcece;
