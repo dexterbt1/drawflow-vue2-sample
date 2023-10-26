@@ -5,9 +5,12 @@
 
 .drawflow .drawflow-node {
     padding: 0;
-    width: auto;
+    /* width: clamp(220px, 20vw, 35vw); */
+    width: 220px;
 	padding-bottom: 1rem;
     background: #ebf1f2;
+    border: 1px solid #bbb;
+    box-shadow: 0 2px 20px 2px #7775;
 }
 .drawflow .drawflow-node.selected {
     background: #ebcece;

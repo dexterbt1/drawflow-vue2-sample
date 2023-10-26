@@ -8,18 +8,22 @@
 		<button @click="addNodeX">Add Node</button>
 		<button @click="exportDF">Export</button>
 		<div style="float: right">
-			<button @click="clearDF">Clear</button>
+			<button @click="clearDF">Clear All</button>
 		</div>
 	  </nav>
 	  <div id="drawflow"></div>
 
 	  <!-- FIXME: not componetized yet -->
-	  <dialog id="exportDialog" v-bind:open="exportDialogShown">
+	  <dialog id="exportDialog">
 		<div class="xp-wrap">
-		  <button class="close" autofocus @click="exportDialogShown=false">Close</button>
+	      <div class="buttons-bar">
+			<button class="close" autofocus @click="exportDialog.close()">Close</button>
+		  </div>	
 		  <textarea>{{ exportValue }}</textarea>
 		</div>
 	  </dialog>
+
+
 	</div>
 </template>
 
@@ -49,23 +53,28 @@
 	border-radius: 5px;
 	background-size: 40px 40px;
     background-image: radial-gradient(circle, #aaa8 1px, #eee0 1px);
+	overflow: clip;
   }
 
   #exportDialog {
     position: absolute;
     width: 50vw;
     height: 70vh;
-    top: calc(50% - 35vh);
 	border: 1px solid #888;
 	border-radius: 5px;
 	background-color: #fafafa;
 	box-shadow: 5px 5px 30px #8885;
   }
+
+  #exportDialog::backdrop {
+	backdrop-filter: blur(2px);
+  }
+
   #exportDialog .xp-wrap {
 	position: relative;
 	height: 100%;
   }
-  #exportDialog .xp-wrap button.close {
+  #exportDialog .xp-wrap .buttons-bar {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -146,14 +155,14 @@
 		NodesSelectionMap: NODES_SELECTION_MAP,  // needed to render the dropdown
 		exportValue: null,
 		exportDialogShown: false,
+		exportDialog: null,
 		selectedNodeType: '',
-	    sampleGreeting: 'hello world',
 	  };
 	},
 
 	mounted() {
 
-	  // init
+	  // init DF
 	  const id = document.getElementById("drawflow");
 	  Vue.prototype.$df = new Drawflow(id, Vue, this);
 	  
@@ -173,7 +182,7 @@
 
 	  this.$df.on('zoom', (zoomLevel) => {
 		// translate background grid also ... note above 40px grid size
-		let GRID = 40;
+		let GRID = 40; // hardcoded for now, possibly refactor as css variable
 		const dfel = document.querySelector('#drawflow');
 		let g = (40 * zoomLevel).toFixed('2');
 		const bgcss = String(g) + 'px ' + String(g) + 'px';
@@ -189,9 +198,14 @@
 	  this.$df.start();
 
 	  // initial configuration of nodes ... do it here ... import etc..
-
-	  const demoDF = {"drawflow":{"Home":{"data":{"1":{"id":1,"name":"TriggerOnly","data":{"trigger_type":"1"},"class":"TriggerOnly","html":"TriggerOnly","typenode":"vue","inputs":{},"outputs":{"output_1":{"connections":[{"node":"3","output":"input_1"}]}},"pos_x":66,"pos_y":22},"2":{"id":2,"name":"SinkTwoInp","data":{},"class":"SinkTwoInp","html":"SinkTwoInp","typenode":"vue","inputs":{"input_1":{"connections":[{"node":"3","input":"output_1"}]},"input_2":{"connections":[{"node":"5","input":"output_1"}]}},"outputs":{},"pos_x":900,"pos_y":62},"3":{"id":3,"name":"PipeOne","data":{},"class":"PipeOne","html":"PipeOne","typenode":"vue","inputs":{"input_1":{"connections":[{"node":"1","input":"output_1"}]}},"outputs":{"output_1":{"connections":[{"node":"2","output":"input_1"}]}},"pos_x":437,"pos_y":115},"4":{"id":4,"name":"TriggerOnly","data":{"trigger_type":"2"},"class":"TriggerOnly","html":"TriggerOnly","typenode":"vue","inputs":{},"outputs":{"output_1":{"connections":[{"node":"5","output":"input_1"},{"node":"6","output":"input_2"}]}},"pos_x":96,"pos_y":450},"5":{"id":5,"name":"PipeOne","data":{},"class":"PipeOne","html":"PipeOne","typenode":"vue","inputs":{"input_1":{"connections":[{"node":"4","input":"output_1"}]}},"outputs":{"output_1":{"connections":[{"node":"2","output":"input_2"},{"node":"6","output":"input_1"}]}},"pos_x":507,"pos_y":313},"6":{"id":6,"name":"SinkTwoInp","data":{},"class":"SinkTwoInp","html":"SinkTwoInp","typenode":"vue","inputs":{"input_1":{"connections":[{"node":"5","input":"output_1"}]},"input_2":{"connections":[{"node":"4","input":"output_1"}]}},"outputs":{},"pos_x":886,"pos_y":495}}}}};
+	  const demoDF = {"drawflow":{"Home":{"data":{"1":{"id":1,"name":"TriggerOnly","data":{"trigger_type":"1"},"class":"TriggerOnly","html":"TriggerOnly","typenode":"vue","inputs":{},"outputs":{"output_1":{"connections":[{"node":"3","output":"input_1"}]}},"pos_x":83,"pos_y":97},"2":{"id":2,"name":"SinkTwoInp","data":{},"class":"SinkTwoInp","html":"SinkTwoInp","typenode":"vue","inputs":{"input_1":{"connections":[{"node":"3","input":"output_1"}]},"input_2":{"connections":[{"node":"4","input":"output_1"}]}},"outputs":{},"pos_x":854,"pos_y":80},"3":{"id":3,"name":"PipeOne","data":{},"class":"PipeOne","html":"PipeOne","typenode":"vue","inputs":{"input_1":{"connections":[{"node":"1","input":"output_1"}]}},"outputs":{"output_1":{"connections":[{"node":"2","output":"input_1"}]}},"pos_x":501,"pos_y":53},"4":{"id":4,"name":"TriggerOnly","data":{"trigger_type":"2"},"class":"TriggerOnly","html":"TriggerOnly","typenode":"vue","inputs":{},"outputs":{"output_1":{"connections":[{"node":"6","output":"input_2"},{"node":"2","output":"input_2"}]}},"pos_x":152,"pos_y":374},"6":{"id":6,"name":"SinkTwoInp","data":{},"class":"SinkTwoInp","html":"SinkTwoInp","typenode":"vue","inputs":{"input_1":{"connections":[]},"input_2":{"connections":[{"node":"4","input":"output_1"}]}},"outputs":{},"pos_x":756,"pos_y":427}}}}};
 	  this.$df.import(demoDF);
+
+
+      // init dialog	
+	  const xpdia = document.querySelector('#exportDialog');
+	  this.exportDialog = xpdia;
+
 	},
 
 	methods: {
@@ -201,7 +215,9 @@
 		this.exportValue = JSON.stringify(xv);
 		console.log('export JSON', this.exportValue);
 
-		this.exportDialogShown = true;	
+		this.exportDialog.showModal();
+
+		//this.exportDialogShown = true;	
 	  },
 
 	  clearDF() {

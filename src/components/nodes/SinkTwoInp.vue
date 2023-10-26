@@ -48,17 +48,21 @@ export default {
         some node-specific style override here, make sure to put a specific class name (component name or css-class)
         if these are repeated, these may be refactored into their own scss
 */
+
+.drawflow .drawflow-node.SinkTwoInp {   /* uses the vue component name */
+  width: 320px;
+}
+
 .drawflow .drawflow-node.selected.SinkTwoInp h1 {   /* uses the vue component name */
     background: #fcebf8;
 }
 .drawflow .drawflow-node.SinkTwoInp h1 {
     margin: 0;
     padding: 10px;
-    font-family: 'Courier New', monospace;
     font-size: 22px;
     background: #eff0e4;
     background: #faf8f0;
-    border-bottom: 2px solid #444;
+    border-bottom: 1px solid #aaa;
 
     .logo {
       float: left;

@@ -60,10 +60,10 @@ export default {
 
 .node-trigger-only h1 {
     margin: 0;
-    padding: 5px;
+    padding: 5px 10px;
     font-size: 1.4rem;
     background: #ebf6fc;
-    border-bottom: 2px solid #444;
+    border-bottom: 1px solid #aaa;
 }
 .node-trigger-only {
     margin: 0;
